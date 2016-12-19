@@ -183,12 +183,8 @@ $(document).ready(function() {
               </th>
               <th class="sales_stock"><?php echo lang('sales_stock'); ?></th>
               <th class="sales_price"><?php echo lang('sales_price'); ?></th>
-                            <th class="sales_plazo"><?php echo lang('sales_plazo'); ?></th>
-                            <th class="sales_tasa"><?php echo lang('sales_tasa'); ?></th>
-                            <th class="sales_tasa"><?php echo lang('sales_frecuencia'); ?></th>
-                            <th class="sales_tasa"><?php echo lang('sales_cuotainicial'); ?></th>
-              <th class="sales_quality"><?php echo lang('sales_quantity'); ?></th>
-                       <th class="sales_discount"><?php echo lang('sales_discount'); ?></th>
+              <th class="sales_tasa"><?php echo lang('sales_cuotainicial'); ?></th>
+              <th class="sales_discount"><?php echo lang('sales_discount'); ?></th>
               <th ><?php echo lang('sales_total'); ?></th>
             </tr>
           </thead>
@@ -264,53 +260,16 @@ $(document).ready(function() {
                   </td>
                   <?php }  ?>
 
-                  <td>
-                    <?php
-                    echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off'));                
-                  //  if ($item['plazo'] == 0){$item['plazo'] = 60;}
-
-
-                    echo form_input(array('name'=>'plazo','value'=>$item['plazo'],'class'=>'input-small', 'id' => 'plazo_'.$line));?>
-                                        </form>
-                       </td>
-                                              <td>
-                    <?php
-                  //  if ($item['tasa'] == 0){$item['tasa'] = 12;}
-
-                    echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off'));                
-                    echo form_input(array('name'=>'tasa','value'=>$item['tasa'],'class'=>'input-small', 'id' => 'tasa_'.$line));?>
-                                        </form>
-                       </td>
-                                       <td>
-                    <?php
-
-                  //  if ($item['frecuencia'] == 0){$item['frecuencia'] = 1;}
-                    echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off'));                
-                    echo form_input(array('name'=>'frecuencia','value'=>$item['frecuencia'],'class'=>'input-small', 'id' => 'frecuencia_'.$line));?>
-                                        </form>
-                       </td> 
-                                     <td>
+                 <td>
                     <?php
 
                     ///aca se agrega la cuota inicial
                     echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off'));                      
+                    echo form_hidden('quantity',to_quantity($item['quantity']));
                     echo form_input(array('name'=>'cuotainicial','value'=>$item['cuotainicial'],'class'=>'input-small', 'id' => 'cuotainicial_'.$line));?>
                                         </form>                                     
 
                        </td>        
-                  <td>
-                    <?php
-                    echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off'));   
-
-                        if(isset($item['is_serialized']) && $item['is_serialized']==1){
-                          echo to_quantity($item['quantity']);
-                          echo form_hidden('quantity',to_quantity($item['quantity']));
-                        }else{
-                          echo form_input(array('name'=>'quantity','value'=>to_quantity($item['quantity']),'class'=>'input-small', 'id' => 'quantity_'.$line));
-                        }?>
-
-                    </form>
-                  </td>
 
                   <?php if ($this->Employee->has_module_action_permission('sales', 'give_discount', $this->Employee->get_logged_in_employee_info()->person_id)){ ?>
                   <td>
@@ -334,12 +293,12 @@ $(document).ready(function() {
                   <?php }  ?>
 
 
-                  <td class="text text-main"><?php echo to_currency($item['price']*$item['quantity']-$item['price']*$item['quantity']*$item['discount']/100); ?></td>
+                  <td class="text text-main"><?php echo to_currency($item['price']*$item['quantity']-$item['discount']-$item['cuotainicial']); ?></td>
                 </tr>
 
                 <tr id="reg_item_bottom">
                   <td ><?php echo lang('sales_description_abbrv').':';?></td>
-                  <td  colspan="7" class="edit_description">
+                  <td  colspan="3" class="edit_description">
                     <?php
                     echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off'));    
 
@@ -377,55 +336,7 @@ $(document).ready(function() {
                   </td>
                 </tr>
 
-<!--  ACA ESTA LA MENSUALIDAD -->
 
-
-<tr id="reg_item_bottom">
-                  <td colspan="2"><?php echo lang('sales_cuotamensual').':';?></td>
-                  <td  colspan="6" class="edit_description">
-<?php
-echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off'));   
-
-$i = $item['tasa'];
-$t = $item['plazo'];
-$p = $item['price'] - $item['cuotainicial'];  
-$f = $item['frecuencia'];
-
-$tasa = $i/100/12*$f;
-$frecuencia = $t/$f;
-$valor_actual = -$p;
-
-$cuotamensual = $tasa * $valor_actual * pow((1 + $tasa), $frecuencia) / (1 - pow((1 + $tasa), $frecuencia));
-
-echo form_hidden(array('name'=>'cuotamensual','value'=>$cuotamensual ,'class'=>'input-medium input_mediums', 'id' => 'cuotamensual_'.$line));
-echo to_currency($cuotamensual);
-
-
- ?>
-                    </form>
-                  </td>
-                  <td >
-
-                    <?php if(isset($item['is_serialized']) && $item['is_serialized']==1  && $item['name']!=lang('sales_giftcard')){
-                      echo lang('sales_serial').':';
-                    }?>
-                  </td>
-                  <td colspan="2" class="edit_serialnumber">
-                    <?php
-                    echo form_open("sales/edit_item/$line", array('class' => 'line_item_form', 'autocomplete'=> 'off'));    
-
-
-                        if(isset($item['is_serialized']) && $item['is_serialized']==1  && $item['name']!=lang('sales_giftcard'))  {
-                        echo form_input(array('name'=>'serialnumber','value'=>$item['serialnumber'], 'class' => 'serial_item','size'=>'20', 'id' => 'serialnumber_'.$line, 'maxlength' => 255));
-                      }else{
-                        echo form_hidden('serialnumber', '');
-                      }?>
-                    </form>
-                  </td>
-                </tr>
-
-
-<!-- HASTA ACA ESTA LA MENSUALIDAD -->                  
               <?php
             }
           }?>
@@ -808,7 +719,7 @@ echo to_currency($cuotamensual);
                   <tr id="mpt_bottom" >
                     <td id="tender" colspan="2">
                       <div class="input-append">
-                        <?php echo form_input(array('name'=>'amount_tendered','id'=>'amount_tendered','value'=>to_currency_no_money(-$cuotamensual),'class'=>'input-medium input_mediums', 'accesskey' => 'p'));  ?>
+                        <?php echo form_input(array('name'=>'amount_tendered','id'=>'amount_tendered','value'=>to_currency_no_money($amount_due),'class'=>'input-medium input_mediums', 'accesskey' => 'p'));  ?>
                         <input type="button" class="btn btn-primary" id="add_payment_button" value="<?php echo lang('sales_add_payment'); ?>" />
                       </div>
 
@@ -1950,7 +1861,7 @@ $(document).ready(function() {
                   <?php }  ?>
 
 
-                  <td class="text text-main"><?php echo to_currency($item['price']*$item['quantity']-$item['price']*$item['quantity']*$item['discount']/100); ?></td>
+                  <td class="text text-main"><?php echo to_currency($item['price']*$item['quantity']-$item['discount']); ?></td>
                 </tr>
 
                 <tr id="reg_item_bottom">
