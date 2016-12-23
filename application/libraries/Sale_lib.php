@@ -1429,15 +1429,13 @@ $cuotamensual = $tasa1 * $valor_actual * pow((1 + $tasa1), $frecuencia1) / (1 - 
     return $items_in_cart;
   }
   
-  function get_subtotal($sale_id = FALSE)
-  {
+  function get_subtotal($sale_id = FALSE) {
     $subtotal = 0;
-    foreach($this->get_cart() as $item)
-    {
+    foreach($this->get_cart() as $item) {
       $price_to_use = $this->_get_price_for_item_in_cart($item, $sale_id);
       //$price_to_use = $price_to_use -$item['cuotainicial'];
-      
-        $subtotal+=($price_to_use*$item['quantity']-$price_to_use*$item['quantity']*$item['discount']/100);
+      error_log('item: '.print_r($item,true));
+      $subtotal+=($price_to_use*$item['quantity']-$item['cuotainicial']-$item['discount']);
     }
     
     return to_currency_no_money($subtotal);
@@ -1487,7 +1485,7 @@ $cuotamensual = $tasa1 * $valor_actual * pow((1 + $tasa1), $frecuencia1) / (1 - 
     foreach($this->get_cart() as $item)
     {
       $price_to_use = $this->_get_price_for_item_in_cart($item, $sale_id);
-        $total+=($price_to_use*$item['quantity']-$price_to_use*$item['quantity']*$item['discount']/100);
+        $total+=($price_to_use*$item['quantity']-$item['cuotainicial']-$item['discount']);
     }
 
     foreach($this->get_taxes($sale_id) as $tax)
