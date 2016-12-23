@@ -479,7 +479,17 @@ $(document).ready(function() {
           </div>
           <!-- Right small box  -->
         <div class="col-md-3 sale_register_rightbox">
+
           <ul class="list-group">
+            <?php if ($this->config->item('select_sales_person_during_sale')) {?>
+            <li class="list-group-item item_tier">
+
+              <div id="select_sales_person">
+                <?php echo lang('sales_sales_person'); ?>: 
+                <?php echo form_dropdown('sold_by_employee_id', $employees, $selected_sold_by_employee_id, 'class="form-control" id="sold_by_employee_id"'); ?>
+              </div>
+            </li>
+            <?php } ?>
             <li class="list-group-item nopadding">
               <!-- Cancel and suspend buttons -->
               <div <?php if(count($cart) > 0){ echo "class='sale_form_main'";}?>>
@@ -879,18 +889,6 @@ $(document).ready(function() {
 </div>
 
 <div class="row ">
-
-
-<?php if ($this->config->item('select_sales_person_during_sale')) {?>
-
-  <div class="col-md-3">
-      <div id="select_sales_person">
-    <?php echo lang('sales_sales_person'); ?>: 
-    <?php echo form_dropdown('sold_by_employee_id', $employees, $selected_sold_by_employee_id, 'class="form-control" id="sold_by_employee_id"'); ?>
-  </div>
-  </div>
-  <?php } ?>
-
 
 <?php
 $reg_info = $this->Register->get_info($this->Employee->get_logged_in_employee_current_register_id());
