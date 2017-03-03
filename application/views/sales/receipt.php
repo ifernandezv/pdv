@@ -80,7 +80,7 @@ if (isset($error_message))
   <tr style="line-height:8px;">
   <th class="left_text_align" style="width:<?php echo $discount_exists ? "33%" : "49%"; ?>;"><?php echo lang('items_item'); ?></th>
   <th class="gift_receipt_element left_text_align" style="width:20%;"><?php echo lang('common_price'); ?></th>
-  <th class="left_text_align" style="width:15%;"><?php echo lang('sales_quantity'); ?></th>
+  <th class="left_text_align" style="width:15%;">Cuota Inicial</th>
   <?php if($discount_exists) 
     {
   ?>
@@ -88,7 +88,7 @@ if (isset($error_message))
   <?php
   }
   ?>
-  <th  class="gift_receipt_element left_right_align" style="width:16%;"><?php echo lang('sales_total'); ?></th>
+  <th  class="gift_receipt_element right_text_align" style="width:16%;"><?php echo lang('sales_total'); ?></th>
   </tr>
   <?php
   foreach(array_reverse($cart, true) as $line=>$item)
@@ -97,7 +97,7 @@ if (isset($error_message))
     <tr style="line-height:8px;">
     <td class="left_text_align"><?php echo $item['name']; ?><?php if ($item['size']){ ?> (<?php echo $item['size']; ?>)<?php } ?></td>
     <td class="gift_receipt_element left_text_align"><?php echo to_currency($item['price']); ?></td>
-    <td class="left_text_align"><?php echo to_quantity($item['quantity']); ?></td>
+    <td class="left_text_align"><?php echo to_quantity($item['cuotainicial']); ?></td>
     <?php if($discount_exists) 
     {
     ?>
@@ -105,7 +105,7 @@ if (isset($error_message))
     <?php
     }
     ?>
-    <td class="gift_receipt_element right_text_align"><?php echo to_currency($item['price']*$item['quantity']-$item['price']*$item['quantity']*$item['discount']/100); ?></td>
+    <td class="gift_receipt_element right_text_align"><?php echo to_currency($item['price']*$item['quantity']-$item['discount']-$item['cuotainicial']); ?></td>
     </tr>
 
       <tr>
