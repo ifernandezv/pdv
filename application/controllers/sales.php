@@ -633,7 +633,25 @@ class Sales extends Secure_area
     $data['store_account_payment'] = $this->sale_lib->get_mode() == 'store_account_payment' ? 1 : 0;
     
     //SAVE sale to database
-    $sale_id_raw = $this->Sale->save($data['cart'], $customer_id, $employee_id, $sold_by_employee_id, $data['comment'],$data['latsale'] ,$date['longsale'],$data['show_comment_on_receipt'],$data['payments'], $suspended_change_sale_id, 0,$data['ref_no'],$data['auth_code'], $data['change_sale_date'], $data['fecha_pago'], $data['balance'], $data['store_account_payment']); 
+    $sale_id_raw = $this->Sale->save(
+        $data['cart'],
+        $customer_id,
+        $employee_id,
+        $sold_by_employee_id,
+        $data['comment'],
+        $data['latsale'],
+        $date['longsale'],
+        $data['show_comment_on_receipt'],
+        $data['payments'],
+        $suspended_change_sale_id,
+        0,
+        $data['ref_no'],
+        $data['auth_code'],
+        $data['change_sale_date'],
+        $data['fecha_pago'],
+        $data['balance'],
+        $data['store_account_payment'],
+      );
     $data['sale_id']=$this->config->item('sale_prefix').' '.$sale_id_raw;
     $data['sale_id_raw']=$sale_id_raw;
     
