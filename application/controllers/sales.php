@@ -650,7 +650,7 @@ class Sales extends Secure_area
         $data['change_sale_date'],
         $data['fecha_pago'],
         $data['balance'],
-        $data['store_account_payment'],
+        $data['store_account_payment']
       );
     $data['sale_id']=$this->config->item('sale_prefix').' '.$sale_id_raw;
     $data['sale_id_raw']=$sale_id_raw;
