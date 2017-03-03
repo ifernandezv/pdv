@@ -1389,11 +1389,12 @@ class Sale extends CI_Model
     {
       $where .= 'WHERE suspended != 2 and '.$this->db->dbprefix('sales').'.location_id='.$this->db->escape($location_id).(($this->config->item('hide_store_account_payments_in_reports') ) ? ' and '.$this->db->dbprefix('sales').'.store_account_payment=0' : '');
     }
-  
-    $return = $this->_create_sales_items_temp_table_query($where);    
+
+//    $return = $this->_create_sales_items_temp_table_query($where);
+    $return = $this->_create_sales_items_from_sales_temp_table_query($where);
     return $return;
   }
-  
+
   function _create_sales_items_temp_table_query($where)
   {
     set_time_limit(0);
@@ -1445,7 +1446,111 @@ class Sale extends CI_Model
     GROUP BY sale_id, item_kit_id, line) ORDER BY sale_id, line");
   }
   
-  
+  function _create_sales_items_from_sales_temp_table_query($where) {
+    set_time_limit(0);
+
+    $query = 'CREATE TEMPORARY TABLE '.$this->db->dbprefix('sales_items_temp').'
+    (SELECT '.$this->db->dbprefix('sales').".deleted as deleted,
+      tier_id,
+      ".$this->db->dbprefix('sales').".deleted_by as deleted_by,
+      sale_time,
+      date(sale_time) as sale_date,
+      ".$this->db->dbprefix('registers').'.name as register_name,
+      '.$this->db->dbprefix('sales_items').".sale_id,
+      comment,
+      payment_type,
+      customer_id,
+      employee_id,
+      sold_by_employee_id,
+      ".$this->db->dbprefix('items').".item_id,
+      commission_fixed,
+      NULL as item_kit_id,
+      supplier_id,
+      quantity_purchased,
+      item_cost_price,
+      item_unit_price,
+      category,
+      discount_percent,
+      (item_unit_price*quantity_purchased-item_unit_price*quantity_purchased*discount_percent/100) as subtotal,
+      (CASE WHEN cumulative != 1 THEN percent/100 ELSE 0 END) as cumpercent,
+      ((SELECT subtotal) * (SELECT cumpercent)) as subtotal_percent,
+      (((SELECT subtotal_percent) + (SELECT subtotal)) * (SELECT cumpercent)) as total_percent,
+      ".$this->db->dbprefix('sales_items').".line as line,
+      serialnumber,
+      ".$this->db->dbprefix('sales_items').".description as description,
+      ((SELECT subtotal)+(SELECT subtotal_percent)
+        +((SELECT subtotal_percent) + (SELECT subtotal))*(SELECT cumpercent)) as total,
+      ((SELECT subtotal_percent)+(SELECT total_percent)) as tax,
+      ((SELECT subtotal) - (item_cost_price*quantity_purchased)) as profit,
+      commission,
+      store_account_payment
+    FROM ".$this->db->dbprefix('sales_items')."
+    INNER JOIN ".$this->db->dbprefix('sales')."
+      ON  ".$this->db->dbprefix('sales_items').'.sale_id='.$this->db->dbprefix('sales').'.sale_id'."
+    INNER JOIN ".$this->db->dbprefix('items')."
+      ON  ".$this->db->dbprefix('sales_items').'.item_id='.$this->db->dbprefix('items').'.item_id'."
+    LEFT OUTER JOIN ".$this->db->dbprefix('suppliers')."
+      ON  ".$this->db->dbprefix('items').'.supplier_id='.$this->db->dbprefix('suppliers').'.person_id'."
+    LEFT OUTER JOIN ".$this->db->dbprefix('sales_items_taxes')."
+      ON  ".$this->db->dbprefix('sales_items').'.sale_id='.$this->db->dbprefix('sales_items_taxes').'.sale_id'." and "
+  .$this->db->dbprefix('sales_items').'.item_id='.$this->db->dbprefix('sales_items_taxes').'.item_id'." and "
+  .$this->db->dbprefix('sales_items').'.line='.$this->db->dbprefix('sales_items_taxes').'.line'. "
+    LEFT OUTER JOIN ".$this->db->dbprefix('registers')."
+      ON  ".$this->db->dbprefix('registers').'.register_id='.$this->db->dbprefix('sales').'.register_id'."
+    $where
+    GROUP BY sale_id, item_id, line)
+    UNION ALL
+    (SELECT ".$this->db->dbprefix('sales').".deleted as deleted,
+      tier_id,".$this->db->dbprefix('sales').".deleted_by as deleted_by,
+      sale_time,
+      date(sale_time) as sale_date,
+      ".$this->db->dbprefix('registers').'.name as register_name,
+      '.$this->db->dbprefix('sales_item_kits').".sale_id,
+      comment,
+      payment_type,
+      customer_id,
+      employee_id,
+      sold_by_employee_id,
+      NULL as item_id,
+      ".$this->db->dbprefix('item_kits').".item_kit_id,
+      commission_fixed,
+      '' as supplier_id,
+      quantity_purchased,
+      item_kit_cost_price,
+      item_kit_unit_price,
+      category,
+      discount_percent,
+      (item_kit_unit_price*quantity_purchased-
+        item_kit_unit_price*quantity_purchased*discount_percent/100) as subtotal,
+      (CASE WHEN cumulative != 1 THEN percent/100 ELSE 0 END) as cumpercent,
+      ((SELECT subtotal) * (SELECT cumpercent)) as subtotal_percent,
+      (((SELECT subtotal_percent) + (SELECT subtotal)) * (SELECT cumpercent)) as total_percent,
+      ".$this->db->dbprefix('sales_item_kits').".line as line,
+      '' as serialnumber,
+      ".$this->db->dbprefix('sales_item_kits').".description as description,
+      ((SELECT subtotal)+(SELECT subtotal_percent)
+      +(SELECT total_percent)) as total,
+      ((SELECT subtotal_percent)+(SELECT total_percent)) as tax,
+      (SELECT subtotal) - (item_kit_cost_price*quantity_purchased) as profit,
+      commission,
+      store_account_payment
+    FROM ".$this->db->dbprefix('sales_item_kits')."
+    INNER JOIN ".$this->db->dbprefix('sales')."
+      ON  ".$this->db->dbprefix('sales_item_kits').'.sale_id='.$this->db->dbprefix('sales').'.sale_id'."
+    INNER JOIN ".$this->db->dbprefix('item_kits')."
+      ON  ".$this->db->dbprefix('sales_item_kits').'.item_kit_id='.$this->db->dbprefix('item_kits').'.item_kit_id'."
+    LEFT OUTER JOIN ".$this->db->dbprefix('sales_item_kits_taxes')."
+      ON  ".$this->db->dbprefix('sales_item_kits').'.sale_id='.$this->db->dbprefix('sales_item_kits_taxes').'.sale_id'." and "
+    .$this->db->dbprefix('sales_item_kits').'.item_kit_id='.$this->db->dbprefix('sales_item_kits_taxes').'.item_kit_id'." and "
+    .$this->db->dbprefix('sales_item_kits').'.line='.$this->db->dbprefix('sales_item_kits_taxes').'.line'. "
+    LEFT OUTER JOIN ".$this->db->dbprefix('registers')."
+      ON  ".$this->db->dbprefix('registers').'.register_id='.$this->db->dbprefix('sales').'.register_id'."
+    $where
+    GROUP BY sale_id, item_kit_id, line)
+    ORDER BY sale_id, line";
+    error_log($query);
+    return $this->db->query($query);
+  }
   
   public function get_giftcard_value( $giftcardNumber )
   {
