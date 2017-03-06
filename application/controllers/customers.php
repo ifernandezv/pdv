@@ -124,6 +124,15 @@ class Customers extends Person_controller
       }  
     }
     
+    $employees = array();
+    $employees_result = $this->Employee->get_all()->result_array();
+
+    if (count($employees_result) > 0) {
+      foreach($employees_result as $employee) {
+        $employees[$employee['id']]=$employee['first_name'].' '.$employee['last_name'];
+      }
+    }
+
     $locations_list=$this->Location->get_all()->result();
     $locations = array();
     foreach($locations_list as $row)
@@ -133,6 +142,7 @@ class Customers extends Person_controller
     
     $data['controller_name']=strtolower(get_class());
     $data['tiers']=$tiers;
+    $data['employees']=$employees;
     $data['locations']=$locations;
     $data['specific_input_name'] = lang('locations_location_id');
     $data['search_suggestion_url'] = site_url('reports/locationid_search');
@@ -183,6 +193,7 @@ class Customers extends Person_controller
     $customer_data=array(
       'company_name' => $this->input->post('company_name'),
       'tier_id' => $this->input->post('tier_id') ? $this->input->post('tier_id') : NULL,
+      'employee_id' => $this->input->post('employee_id') ? $this->input->post('employee_id') : 0,
       'location_id' => $this->input->post('location_id') ? $this->input->post('location_id') : 0,
       'lat' => $this->input->post('lat') ? $this->input->post('lat') : NULL,
       'long' => $this->input->post('long') ? $this->input->post('long') : NULL,

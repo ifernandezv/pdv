@@ -418,6 +418,13 @@ $(document).ready(function() {
             </div>
             <?php } ?>
 
+            <div class="form-group">
+              <?php echo form_label('Empleado:', 'employee_id',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
+              <div class="col-sm-9 col-md-9 col-lg-10">
+                <?php echo form_dropdown('employee_id', $employees, $this->session->employee_current_register_id);?>
+              </div>
+            </div>
+
             <?php if($person_info->cc_token && $person_info->cc_preview) { ?>
             <div class="control-group">  
               <?php echo form_label(lang('customers_delete_cc_info').':', 'delete_cc_info',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
