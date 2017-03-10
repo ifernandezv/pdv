@@ -97,11 +97,11 @@ if (isset($error_message))
     <tr style="line-height:8px;">
     <td class="left_text_align"><?php echo $item['name']; ?><?php if ($item['size']){ ?> (<?php echo $item['size']; ?>)<?php } ?></td>
     <td class="gift_receipt_element left_text_align"><?php echo to_currency($item['price']); ?></td>
-    <td class="left_text_align"><?php echo to_quantity($item['cuotainicial']); ?></td>
+    <td class="left_text_align"><?php echo to_currency($item['cuotainicial']); ?></td>
     <?php if($discount_exists) 
     {
     ?>
-    <td class="gift_receipt_element left_text_align"><?php echo $item['discount']; ?></td>
+    <td class="gift_receipt_element left_text_align"><?php echo to_currency($item['discount']); ?></td>
     <?php
     }
     ?>
