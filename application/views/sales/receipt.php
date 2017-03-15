@@ -316,7 +316,7 @@ if (isset($error_message))
                 'name' => 'submit',
                 'id' => 'btn-submit',
                 'value' => 'Préstamo',
-                'class' => 'btn btn-primary'
+                'class' => 'btn btn-primary hidden-print'
             )
     );
     ?>
