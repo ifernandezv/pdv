@@ -358,7 +358,7 @@
               echo lang('sales_global_sale_discount').': ';
               echo '</label>';
               echo '&nbsp;&nbsp;';
-              echo form_input(array('name'=>'discount_all_percent','value'=> '','size'=>'3', 'id' => 'discount_all_percent'));
+              echo form_input(array('name'=>'discount_all_percent','value'=> $commission,'size'=>'3', 'id' => 'discount_all_percent'));
               echo '%&nbsp;&nbsp;';
               echo form_submit('submit_discount_form',lang('common_submit'),'class="btn btn-primary"');
               ?>
@@ -1911,7 +1911,7 @@ $(document).ready(function() {
               echo lang('sales_global_sale_discount').': ';
               echo '</label>';
               echo '&nbsp;&nbsp;';
-              echo form_input(array('name'=>'discount_all_percent','value'=> '','size'=>'3', 'id' => 'discount_all_percent'));
+              echo form_input(array('name'=>'discount_all_percent','value'=> "$commission",'size'=>'3', 'id' => 'discount_all_percent'));
               echo '%&nbsp;&nbsp;';
               echo form_submit('submit_discount_form',lang('common_submit'),'class="btn btn-primary"');
               ?>
