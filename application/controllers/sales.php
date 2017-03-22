@@ -479,14 +479,14 @@ class Sales extends Secure_area
       $data['error']=lang('sales_error_editing_item');
     }
     
-    if($this->sale_lib->is_kit_or_item($line) == 'item')
+/*    if($this->sale_lib->is_kit_or_item($line) == 'item')
     {
       if($this->sale_lib->out_of_stock($this->sale_lib->get_item_id($line)))
       {
         $data['warning'] = lang('sales_quantity_less_than_zero');
       }
     }
-    elseif($this->sale_lib->is_kit_or_item($line) == 'kit')
+    else */ if($this->sale_lib->is_kit_or_item($line) == 'kit')
     {
         if($this->sale_lib->out_of_stock_kit($this->sale_lib->get_kit_id($line)))
         {
@@ -1124,7 +1124,7 @@ class Sales extends Secure_area
     $data['fecha_pago'] = $this->sale_lib->get_fecha_pago();
     $data['selected_tier_id'] = $this->sale_lib->get_selected_tier_id();
     $data['is_over_credit_limit'] = false;
-
+    $data['commission'] = $person_info->commission_percent;
     $employees = array('' => lang('common_not_set'));
     
     foreach($this->Employee->get_all()->result() as $employee)
@@ -1222,6 +1222,7 @@ class Sales extends Secure_area
     $data['customer_required_check'] = (!$this->config->item('require_customer_for_sale') || ($this->config->item('require_customer_for_sale') && isset($customer_id) && $customer_id!=-1));
     
     $data['payments_cover_total'] = $this->_payments_cover_total();
+
     if ($is_ajax)
     {
       $this->load->view("sales/register",$data);
@@ -1469,25 +1470,21 @@ class Sales extends Secure_area
       $this->_reload(array(), false);
   }
     
-  function unsuspend($sale_id = 0)
-  {
+  function unsuspend($sale_id = 0) {
     $sale_id = $this->input->post('suspended_sale_id') ? $this->input->post('suspended_sale_id') : $sale_id;
     $this->sale_lib->clear_all();
     $this->sale_lib->copy_entire_sale($sale_id);
     $this->sale_lib->set_suspended_sale_id($sale_id);
-    
-    
-    if ($this->sale_lib->get_customer())
-    {
+
+    if ($this->sale_lib->get_customer()) {
       $customer_info=$this->Customer->get_info($this->sale_lib->get_customer());
   
-      if ($customer_info->tier_id)
-      {
+      if ($customer_info->tier_id) {
         $this->sale_lib->set_selected_tier_id($customer_info->tier_id);
       }
     }
     
-      $this->_reload(array(), false);
+    $this->_reload(array(), false);
   }
   
   function delete_suspended_sale()
