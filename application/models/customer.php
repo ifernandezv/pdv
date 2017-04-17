@@ -322,60 +322,61 @@ class Customer extends Person
   /*
   Get search suggestions to find customers
   */
-  function get_customer_search_suggestions($search,$limit=25)
-  {
+  function get_customer_search_suggestions($search,$limit=25,$employee=NULL) {
     $suggestions = array();
-    
+
+    $restringir_empleado = empty($employee)?'':' AND employee_id = '.$employee;
     $this->db->from('customers');
     $this->db->join('people','customers.person_id=people.person_id');  
     
     $this->db->where("(first_name LIKE '%".$this->db->escape_like_str($search)."%' or 
     last_name LIKE '%".$this->db->escape_like_str($search)."%' or 
     CONCAT(`first_name`,' ',`last_name`) LIKE '%".$this->db->escape_like_str($search)."%' or
-    CONCAT(`last_name`,', ',`first_name`) LIKE '%".$this->db->escape_like_str($search)."%') and deleted=0");      
+    CONCAT(`last_name`,', ',`first_name`) LIKE '%".$this->db->escape_like_str($search)."%')
+    ".$restringir_empleado." and deleted=0");
     
-    $this->db->limit($limit);  
+    $this->db->limit($limit);
     $by_name = $this->db->get();
     
     $temp_suggestions = array();
     
-    foreach($by_name->result() as $row)
-    {
+    foreach($by_name->result() as $row) {
       $temp_suggestions[$row->person_id] = $row->last_name.', '.$row->first_name;
     }
     
     asort($temp_suggestions);
     
-    foreach($temp_suggestions as $key => $value)
-    {
+    foreach($temp_suggestions as $key => $value) {
       $suggestions[]=array('value'=> $key, 'label' => $value);    
     }
-    
+
     $this->db->from('customers');
-    $this->db->join('people','customers.person_id=people.person_id');  
-    $this->db->where('deleted',0);    
+    $this->db->join('people','customers.person_id=people.person_id');
+    if( !empty($employee) ) {
+      $this->db->where('employee_id',$employee);
+    }
+    $this->db->where('deleted',0);
     $this->db->like("account_number",$search);
     $this->db->limit($limit);
     $by_account_number = $this->db->get();
-    
-    
+
     $temp_suggestions = array();
-    
-    foreach($by_account_number->result() as $row)
-    {
+
+    foreach($by_account_number->result() as $row) {
       $temp_suggestions[$row->person_id] = $row->account_number;
     }
     
     asort($temp_suggestions);
     
-    foreach($temp_suggestions as $key => $value)
-    {
+    foreach($temp_suggestions as $key => $value) {
       $suggestions[]=array('value'=> $key, 'label' => $value);    
     }
     
-    
     $this->db->from('customers');
     $this->db->join('people','customers.person_id=people.person_id');  
+    if( !empty($employee) ) {
+      $this->db->where('employee_id',$employee);
+    }
     $this->db->where('deleted',0);    
     $this->db->like("email",$search);
     $this->db->limit($limit);
@@ -383,42 +384,43 @@ class Customer extends Person
     
     $temp_suggestions = array();
     
-    foreach($by_email->result() as $row)
-    {
+    foreach($by_email->result() as $row) {
       $temp_suggestions[$row->person_id] = $row->email;
     }
     
     asort($temp_suggestions);
     
-    foreach($temp_suggestions as $key => $value)
-    {
+    foreach($temp_suggestions as $key => $value) {
       $suggestions[]=array('value'=> $key, 'label' => $value);    
     }
-      
+
     $this->db->from('customers');
     $this->db->join('people','customers.person_id=people.person_id');  
+    if( !empty($employee) ) {
+      $this->db->where('employee_id',$employee);
+    }
     $this->db->where('deleted',0);    
     $this->db->like("phone_number",$search);
     $this->db->limit($limit);
     $by_phone_number = $this->db->get();
-    
-    
+
     $temp_suggestions = array();
     
-    foreach($by_phone_number->result() as $row)
-    {
+    foreach($by_phone_number->result() as $row) {
       $temp_suggestions[$row->person_id] = $row->phone_number;
     }
     
     asort($temp_suggestions);
     
-    foreach($temp_suggestions as $key => $value)
-    {
+    foreach($temp_suggestions as $key => $value) {
       $suggestions[]=array('value'=> $key, 'label' => $value);    
     }
     
     $this->db->from('customers');
     $this->db->join('people','customers.person_id=people.person_id');  
+    if( !empty($employee) ) {
+      $this->db->where('employee_id',$employee);
+    }
     $this->db->where('deleted',0);    
     $this->db->like("company_name",$search);
     $this->db->limit($limit);
@@ -426,37 +428,32 @@ class Customer extends Person
     
     $temp_suggestions = array();
     
-    foreach($by_company_name->result() as $row)
-    {
+    foreach($by_company_name->result() as $row) {
       $temp_suggestions[$row->person_id] = $row->company_name;
     }
-    
+
     asort($temp_suggestions);
-    
-    foreach($temp_suggestions as $key => $value)
-    {
+
+    foreach($temp_suggestions as $key => $value) {
       $suggestions[]=array('value'=> $key, 'label' => $value);    
     }
     
-    for($k=count($suggestions)-1;$k>=0;$k--)
-    {
-      if (!$suggestions[$k]['label'])
-      {
+    for($k=count($suggestions)-1;$k>=0;$k--) {
+      if (!$suggestions[$k]['label']) {
         unset($suggestions[$k]);
       }
     }
     
     $suggestions = array_values($suggestions);
-    
-    
+
     //only return $limit suggestions
-    if(count($suggestions > $limit))
-    {
+    if(count($suggestions > $limit)) {
       $suggestions = array_slice($suggestions, 0,$limit);
     }
-    return $suggestions;
 
+    return $suggestions;
   }
+
   /*
   Preform a search on customers
   */
