@@ -34,6 +34,16 @@ class Config extends Secure_area
       $data['payment_options'][$additional_payment_type] = $additional_payment_type;
     }
     
+    $employees = array();
+    $employees_result = $this->Employee->get_all()->result_array();
+
+    if (count($employees_result) > 0) {
+      foreach($employees_result as $employee) {
+        $employees[$employee['id']]=$employee['first_name'].' '.$employee['last_name'];
+      }
+    }
+
+    $data['employees']=$employees;
     $data['tiers'] = $this->Tier->get_all();
     
     $this->load->view("config", $data);
@@ -69,6 +79,7 @@ class Config extends Secure_area
     $valid_languages = directory_map(APPPATH.'language/', 1);
     $batch_save_data=array(
     'company'=>$this->input->post('company'),
+    'employee_id'=>$this->input->post('employee_id'),
     'sale_prefix'=>$this->input->post('sale_prefix') ? $this->input->post('sale_prefix') : 'POS',
     'website'=>$this->input->post('website'),
     'prices_include_tax' => $this->input->post('prices_include_tax') ? 1 : 0,

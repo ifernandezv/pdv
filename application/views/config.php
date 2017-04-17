@@ -292,6 +292,25 @@
                 ?>
               </div>
             </div>
+
+            <div class="form-group">
+              <?php echo form_label('Asignar clientes \'vencidos\' a:', 'employee_id',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
+              <div class="col-sm-9 col-md-9 col-lg-10">
+                <?php echo form_dropdown(
+                  'employee_id',
+                  $employees,
+                  empty($this->config->item('employee_id'))
+                    ?$this->session->employee_current_register_id
+                    :$this->config->item('employee_id')
+                  );
+                  echo form_hidden('fecha_asignado',
+                    empty($person_info->fecha_asignado)
+                      ?$this->session->employee_current_register_id
+                      :$person_info->fecha_asignado
+                  ); ?>
+              </div>
+            </div>
+
             <div class="form-group">  
               <?php echo form_label(lang('config_print_after_sale').':', 'print_after_sale',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
               <div class="col-sm-9 col-md-9 col-lg-10">
