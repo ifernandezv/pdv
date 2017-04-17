@@ -410,7 +410,7 @@ $(document).ready(function() {
             </div>
 
             <?php if (!empty($tiers)) { ?>
-            <div class="form-group">  
+            <div class="form-group">
               <?php echo form_label(lang('customers_tier_type').':', 'tier_type',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
               <div class="col-sm-9 col-md-9 col-lg-10">
                 <?php echo form_dropdown('tier_id', $tiers, $person_info->tier_id);?>
@@ -421,10 +421,35 @@ $(document).ready(function() {
             <div class="form-group">
               <?php echo form_label('Empleado:', 'employee_id',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
               <div class="col-sm-9 col-md-9 col-lg-10">
-                <?php echo form_dropdown('employee_id', $employees, $this->session->employee_current_register_id);?>
+                <?php echo form_dropdown(
+                  'employee_id',
+                  $employees,
+                  empty($person_info->employee_id)
+                    ?$this->session->employee_current_register_id
+                    :$person_info->employee_id
+                  );
+                  echo form_hidden('fecha_asignado',
+                    empty($person_info->fecha_asignado)
+                      ?time()
+                      :$person_info->fecha_asignado
+                  );
+                ?>
               </div>
             </div>
-
+            <?php
+            $employee = $this->Employee->get_logged_in_employee_info();
+            if($employee->id == $this->config->item('employee_id')) { ?>
+            <div class="form-group">
+              <?php echo form_label('A partir de hoy:',
+                'actualizar_fecha_asignado',
+                array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')
+              ); ?>
+              <div class="col-sm-9 col-md-9 col-lg-10">
+                <?php echo form_checkbox('actualizar_fecha_asignado', ''); ?>
+              </div>
+            </div>
+            <?php }
+            ?>
             <?php if($person_info->cc_token && $person_info->cc_preview) { ?>
             <div class="control-group">  
               <?php echo form_label(lang('customers_delete_cc_info').':', 'delete_cc_info',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>

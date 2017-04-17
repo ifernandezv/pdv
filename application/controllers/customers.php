@@ -178,17 +178,17 @@ class Customers extends Person_controller
   {
     $this->check_action_permission('add_update');
     $person_data = array(
-    'first_name'=>$this->input->post('first_name'),
-    'last_name'=>$this->input->post('last_name'),
-    'email'=>$this->input->post('email'),
-    'phone_number'=>$this->input->post('phone_number'),
-    'address_1'=>$this->input->post('address_1'),
-    'address_2'=>$this->input->post('address_2'),
-    'city'=>$this->input->post('city'),
-    'state'=>$this->input->post('state'),
-    'zip'=>$this->input->post('zip'),
-    'country'=>$this->input->post('country'),
-    'comments'=>$this->input->post('comments')
+      'first_name'=>$this->input->post('first_name'),
+      'last_name'=>$this->input->post('last_name'),
+      'email'=>$this->input->post('email'),
+      'phone_number'=>$this->input->post('phone_number'),
+      'address_1'=>$this->input->post('address_1'),
+      'address_2'=>$this->input->post('address_2'),
+      'city'=>$this->input->post('city'),
+      'state'=>$this->input->post('state'),
+      'zip'=>$this->input->post('zip'),
+      'country'=>$this->input->post('country'),
+      'comments'=>$this->input->post('comments')
     );
     $customer_data=array(
       'company_name' => $this->input->post('company_name'),
@@ -201,7 +201,11 @@ class Customers extends Person_controller
       'taxable'=>$this->input->post('taxable')=='' ? 0:1,
       'type'=>$this->input->post('type') ? $this->input->post('type'):0,
     );
-    
+
+    if ( !empty ($this->input->post('actualizar_fecha_asignado'))) {
+      $customer_data['fecha_asignado'] = time();
+    }
+
     if ($this->input->post('balance')!== FALSE && is_numeric($this->input->post('balance')))
     {
       $customer_data['balance'] = $this->input->post('balance');
