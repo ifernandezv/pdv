@@ -86,6 +86,38 @@ class Employee extends Person
   }
 
   /*
+  Gets information about a particular employee
+  */
+  function get_info_by_id($employee_id)
+  {
+    $this->db->from('employees');  
+    $this->db->join('people', 'people.person_id = employees.person_id');
+    $this->db->where('employees.id',$employee_id);
+    $query = $this->db->get();
+
+    if($query->num_rows()==1)
+    {
+      return $query->row();
+    }
+    else
+    {
+      //Get empty base parent object, as $employee_id is NOT an employee
+      $person_obj=parent::get_info(-1);
+
+      //Get all the fields from employee table
+      $fields = $this->db->list_fields('employees');
+
+      //append those fields to base parent object, we we have a complete empty object
+      foreach ($fields as $field)
+      {
+        $person_obj->$field='';
+      }
+
+      return $person_obj;
+    }
+  }
+
+  /*
   Gets information about multiple employees
   */
   function get_multiple_info($employee_ids)
