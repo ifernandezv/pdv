@@ -40,15 +40,20 @@ class Customer extends Person
   /*
   Returns all the customers
   */
-  function get_all($limit=10000, $offset=0,$col='last_name',$order='asc')
-  {
+  function get_all($limit=10000, $offset=0,$col='last_name',$order='asc') {
+    $solo_empleado = '';
+    $employee = $this->Employee->get_logged_in_employee_info();
+    if($employee->id != $this->config->item('employee_id')) {
+      $solo_empleado = ' AND employee_id = '.$employee->id;
+    }
     $people=$this->db->dbprefix('people');
     $customers=$this->db->dbprefix('customers');
     $data=$this->db->query("SELECT * 
             FROM ".$people."
             STRAIGHT_JOIN ".$customers." ON                                            
             ".$people.".person_id = ".$customers.".person_id
-            WHERE deleted =0 ORDER BY ".$col." ". $order." 
+            WHERE deleted=0 ".$solo_empleado."
+            ORDER BY ".$col." ". $order."
             LIMIT  ".$offset.",".$limit);    
             
     return $data;
@@ -206,8 +211,12 @@ class Customer extends Person
    /*
   Get search suggestions to find customers
   */
-  function get_search_suggestions($search,$limit=25)
-  {
+  function get_search_suggestions($search,$limit=25) {
+    $solo_empleado = '';
+    $employee = $this->Employee->get_logged_in_employee_info();
+    if($employee->id != $this->config->item('employee_id')) {
+      $solo_empleado = ' AND employee_id = '.$employee->id;
+    }
     $suggestions = array();
     
     $this->db->from('customers');
@@ -216,8 +225,9 @@ class Customer extends Person
     $this->db->where("(first_name LIKE '%".$this->db->escape_like_str($search)."%' or 
     last_name LIKE '%".$this->db->escape_like_str($search)."%' or 
     CONCAT(`first_name`,' ',`last_name`) LIKE '%".$this->db->escape_like_str($search)."%' or 
-    CONCAT(`last_name`,', ',`first_name`) LIKE '%".$this->db->escape_like_str($search)."%') and deleted=0");
-    
+    CONCAT(`last_name`,', ',`first_name`) LIKE '%".$this->db->escape_like_str($search)."%')
+    AND deleted=0".$solo_empleado);
+
     $this->db->limit($limit);  
     $by_name = $this->db->get();
     
@@ -235,7 +245,8 @@ class Customer extends Person
     
     $this->db->from('customers');
     $this->db->join('people','customers.person_id=people.person_id');  
-    $this->db->where('deleted',0);    
+    $this->db->where('deleted',0);
+    $this->db->where('employee_id',$employee->id);
     $this->db->like("email",$search);
     $this->db->limit($limit);
     $by_email = $this->db->get();
@@ -255,6 +266,7 @@ class Customer extends Person
     $this->db->from('customers');
     $this->db->join('people','customers.person_id=people.person_id');  
     $this->db->where('deleted',0);    
+    $this->db->where('employee_id',$employee->id);
     $this->db->like("phone_number",$search);
     $this->db->limit($limit);  
     $by_phone = $this->db->get();
@@ -275,6 +287,7 @@ class Customer extends Person
     $this->db->from('customers');
     $this->db->join('people','customers.person_id=people.person_id');  
     $this->db->where('deleted',0);    
+    $this->db->where('employee_id',$employee->id);
     $this->db->like("account_number",$search);
     $this->db->limit($limit);
     $by_account_number = $this->db->get();
@@ -294,6 +307,7 @@ class Customer extends Person
     $this->db->from('customers');
     $this->db->join('people','customers.person_id=people.person_id');  
     $this->db->where('deleted',0);    
+    $this->db->where('employee_id',$employee->id);
     $this->db->like("company_name",$search);
     $this->db->limit($limit);
     $by_company_name = $this->db->get();
@@ -457,38 +471,48 @@ class Customer extends Person
   /*
   Preform a search on customers
   */
-  function search($search, $limit=20,$offset=0,$column='last_name',$orderby='asc')
-  {
-      $this->db->from('customers');
-      $this->db->join('people','customers.person_id=people.person_id');    
-      $this->db->where("(first_name LIKE '%".$this->db->escape_like_str($search)."%' or 
-      last_name LIKE '%".$this->db->escape_like_str($search)."%' or 
-      email LIKE '%".$this->db->escape_like_str($search)."%' or 
-      phone_number LIKE '%".$this->db->escape_like_str($search)."%' or 
-      account_number LIKE '%".$this->db->escape_like_str($search)."%' or 
-      company_name LIKE '%".$this->db->escape_like_str($search)."%' or 
-      CONCAT(`first_name`,' ',`last_name`) LIKE '%".$this->db->escape_like_str($search)."%' or 
-      CONCAT(`last_name`,', ',`first_name`) LIKE '%".$this->db->escape_like_str($search)."%') and deleted=0");    
-      $this->db->order_by($column,$orderby);
-      $this->db->limit($limit);
-      $this->db->offset($offset);
-      return $this->db->get();
+  function search($search, $limit=20,$offset=0,$column='last_name',$orderby='asc') {
+    $solo_empleado = '';
+    $employee = $this->Employee->get_logged_in_employee_info();
+    if($employee->id != $this->config->item('employee_id')) {
+      $solo_empleado = ' AND employee_id = '.$employee->id;
+    }
+    $this->db->from('customers');
+    $this->db->join('people','customers.person_id=people.person_id');    
+    $this->db->where("(first_name LIKE '%".$this->db->escape_like_str($search)."%' or 
+    last_name LIKE '%".$this->db->escape_like_str($search)."%' or 
+    email LIKE '%".$this->db->escape_like_str($search)."%' or 
+    phone_number LIKE '%".$this->db->escape_like_str($search)."%' or 
+    account_number LIKE '%".$this->db->escape_like_str($search)."%' or 
+    company_name LIKE '%".$this->db->escape_like_str($search)."%' or 
+    CONCAT(`first_name`,' ',`last_name`) LIKE '%".$this->db->escape_like_str($search)."%' or 
+    CONCAT(`last_name`,', ',`first_name`) LIKE '%".$this->db->escape_like_str($search)."%')
+    AND deleted=0".$solo_empleado);    
+    $this->db->order_by($column,$orderby);
+    $this->db->limit($limit);
+    $this->db->offset($offset);
+    return $this->db->get();
   }
   
-  function search_count_all($search, $limit=10000)
-  {
-      $this->db->from('customers');
-      $this->db->join('people','customers.person_id=people.person_id');    
-      $this->db->where("(first_name LIKE '%".$this->db->escape_like_str($search)."%' or 
-      last_name LIKE '%".$this->db->escape_like_str($search)."%' or 
-      email LIKE '%".$this->db->escape_like_str($search)."%' or 
-      phone_number LIKE '%".$this->db->escape_like_str($search)."%' or 
-      account_number LIKE '%".$this->db->escape_like_str($search)."%' or 
-      company_name LIKE '%".$this->db->escape_like_str($search)."%' or 
-      CONCAT(`first_name`,' ',`last_name`) LIKE '%".$this->db->escape_like_str($search)."%') and deleted=0");    
-      $this->db->limit($limit);
-      $result=$this->db->get();        
-      return $result->num_rows();
+  function search_count_all($search, $limit=10000) {
+    $solo_empleado = '';
+    $employee = $this->Employee->get_logged_in_employee_info();
+    if($employee->id != $this->config->item('employee_id')) {
+      $solo_empleado = ' AND employee_id = '.$employee->id;
+    }
+    $this->db->from('customers');
+    $this->db->join('people','customers.person_id=people.person_id');
+    $this->db->where("(first_name LIKE '%".$this->db->escape_like_str($search)."%' or
+    last_name LIKE '%".$this->db->escape_like_str($search)."%' or
+    email LIKE '%".$this->db->escape_like_str($search)."%' or
+    phone_number LIKE '%".$this->db->escape_like_str($search)."%' or
+    account_number LIKE '%".$this->db->escape_like_str($search)."%' or
+    company_name LIKE '%".$this->db->escape_like_str($search)."%' or
+    CONCAT(`first_name`,' ',`last_name`) LIKE '%".$this->db->escape_like_str($search)."%')
+    AND deleted=0".$solo_empleado);
+    $this->db->limit($limit);
+    $result=$this->db->get();  
+    return $result->num_rows();
   }
     
   function cleanup()
