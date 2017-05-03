@@ -16,7 +16,7 @@
     </div>
 
           <div class="form-group">
-      <?php echo form_label(lang('common_last_name').':', 'last_name',array('class'=>' col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
+      <?php echo form_label(lang('common_last_name').':', 'last_name',array('class'=>$required.' col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
       <div class="col-sm-9 col-md-9 col-lg-10">
       <?php echo form_input(array(
         'class'=>'form-control',
