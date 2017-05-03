@@ -445,7 +445,7 @@ $(document).ready(function() {
                 array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')
               ); ?>
               <div class="col-sm-9 col-md-9 col-lg-10">
-                <?php echo form_checkbox('actualizar_fecha_asignado', ''); ?>
+                <?php echo form_checkbox('actualizar_fecha_asignado', 1); ?>
               </div>
             </div>
             <?php }
