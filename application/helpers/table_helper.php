@@ -11,16 +11,15 @@ function get_people_manage_table($people,$controller)
   if($controller_name=='customers' &&  $CI->config->item('customers_store_accounts'))
   {
     $headers = array('<input type="checkbox" id="select_all" />', 
-    lang('common_person_id'),
     lang('common_last_name'),
     lang('common_first_name'),
     lang('common_email'),
     lang('common_phone_number'),
     lang('customers_gmaps'),
     lang('customers_balance'),
-    '&nbsp',
+    'Asignado a',
+    'Fecha asignado',
     '&nbsp');
-  
   }
   else 
   {  
@@ -90,7 +89,6 @@ function get_person_data_row($person,$controller)
   $table_data_row='<tr>';  
   
   $table_data_row.="<td><input type='checkbox'  id='person_$person->person_id' value='".$person->person_id."'/></td>";
-  $table_data_row.='<td>'.$person->person_id.'</td>';
   $table_data_row.='<td ><a href="'.$link.'" class="underline">'.H($person->last_name).'</a></td>';
   $table_data_row.='<td><a href="'.$link.'" class="underline">'.H($person->first_name).'</a></td>';
   $table_data_row.='<td>'.mailto(H($person->email),H($person->email), array('class' => 'underline')).'</td>';
@@ -121,8 +119,13 @@ function get_person_data_row($person,$controller)
   $link = 'https://www.google.com/maps/place/'.$gmaps.'/@'.$lat1.','.$long1.'';
   $url = '<a href="'.$link.'" target="_blank">Ubicación</a>'; 
     $table_data_row.='<td>'.$url.'</td>';
-    $table_data_row.='<td width="15%">'.to_currency($person->balance).'</td>';    
-    $table_data_row.='<td width="5%">'.anchor($controller_name."/pay_now/$person->person_id",lang('customers_pay'),array('title'=>lang('customers_pay'))).'</td>';
+
+    /* otros datos específicos de clientes: */
+    $table_data_row.='<td width="15%">'.to_currency($person->balance).'</td>';
+
+    $table_data_row.='<td>'.$person->employee_name.'</td>';
+    $table_data_row.='<td>'.date('d-m-Y',$person->fecha_asignado).'</td>';
+/*    $table_data_row.='<td width="5%">'.anchor($controller_name."/pay_now/$person->person_id",lang('customers_pay'),array('title'=>lang('customers_pay'))).'</td>'; */
   }
   $table_data_row.='<td>'.anchor($controller_name."/view/$person->person_id/2", lang('common_edit'),array('class'=>'update-person','title'=>lang($controller_name.'_update'))).'</td>';
   
