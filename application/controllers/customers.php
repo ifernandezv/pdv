@@ -31,6 +31,10 @@ class Customers extends Person_controller
       $config['total_rows'] = $this->Customer->count_all();
       $table_data = $this->Customer->get_all($data['per_page'],$params['offset'],$params['order_col'],$params['order_dir']);
     }
+    foreach($table_data->result() as $person){
+      $employee = $this->Employee->get_info_by_id($person->employee_id);
+      $person->employee_name = $employee->first_name.' '.$employee->last_name;
+    }
     $this->pagination->initialize($config);
     $data['pagination'] = $this->pagination->create_links();
     $data['order_col'] = $params['order_col'];
