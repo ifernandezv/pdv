@@ -18,10 +18,19 @@
         <h5><?php echo lang("customers_basic_information"); ?></h5>
       </div>
       <div class="widget-content ">
-        <?php echo form_open_multipart('customers/save/'.$person_info->person_id,array('id'=>'customer_form','class'=>'form-horizontal'));   ?>
-        <?php $this->load->view("people/form_basic_info"); ?>
-        
-        
+        <?php
+        $employee = $this->Employee->get_logged_in_employee_info();
+        $empleado_especial = ($employee->id == $this->config->item('employee_id'));
+        echo form_open_multipart(
+          'customers/save/'.$person_info->person_id,
+          array(
+            'id'=>'customer_form',
+            'class'=>'form-horizontal'
+          )
+        );
+        $this->load->view("people/form_basic_info");
+      ?>
+
 <div class="form-group">  
           <?php echo form_label(lang('customers_gmaps'), 'gmaps',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
 <style type="text/css" >
@@ -340,6 +349,8 @@ $(document).ready(function() {
         {
         ?>
 
+        <?php
+        if($empleado_especial) { ?>
         <div class="form-group">  
           <?php echo form_label(lang('customers_store_account_balance').':', 'balance',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
           <div class="col-sm-9 col-md-9 col-lg-10">
@@ -348,9 +359,10 @@ $(document).ready(function() {
               'id'=>'balance',
               'class'=>'balance',
               'value'=>$person_info->balance ? to_currency_no_money($person_info->balance) : '0.00')
-              );?>
-            </div>
+            );?>
           </div>
+        </div>
+        <?php } ?>
 
         <div class="form-group">  
           <?php echo form_label(lang('customers_credit_limit').':', 'credit_limit',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
@@ -418,6 +430,13 @@ $(document).ready(function() {
             </div>
             <?php } ?>
 
+            <?php
+            echo form_hidden('fecha_asignado',
+              empty($person_info->fecha_asignado)
+                ?time()
+                :$person_info->fecha_asignado
+            );
+            if($empleado_especial) { ?>
             <div class="form-group">
               <?php echo form_label('Empleado:', 'employee_id',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
               <div class="col-sm-9 col-md-9 col-lg-10">
@@ -428,17 +447,9 @@ $(document).ready(function() {
                     ?$this->session->employee_current_register_id
                     :$person_info->employee_id
                   );
-                  echo form_hidden('fecha_asignado',
-                    empty($person_info->fecha_asignado)
-                      ?time()
-                      :$person_info->fecha_asignado
-                  );
                 ?>
               </div>
             </div>
-            <?php
-            $employee = $this->Employee->get_logged_in_employee_info();
-            if($employee->id == $this->config->item('employee_id')) { ?>
             <div class="form-group">
               <?php echo form_label('A partir de hoy:',
                 'actualizar_fecha_asignado',
@@ -449,6 +460,13 @@ $(document).ready(function() {
               </div>
             </div>
             <?php }
+            else {
+              echo form_hidden('employee_id',
+                empty($person_info->employee_id)
+                  ?$this->session->employee_current_register_id
+                  :$person_info->employee_id
+                );
+            }
             ?>
             <?php if($person_info->cc_token && $person_info->cc_preview) { ?>
             <div class="control-group">  
