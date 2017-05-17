@@ -41,7 +41,7 @@
       </div>
     </div>
           <div class="form-group">  
-    <?php echo form_label(lang('common_phone_number').':', 'phone_number',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
+    <?php echo form_label(lang('common_phone_number').':', 'phone_number',array('class'=>$required.' col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
       <div class="col-sm-9 col-md-9 col-lg-10">
       <?php echo form_input(array(
         'class'=>'form-control',
@@ -110,7 +110,7 @@
 
 
 <div class="form-group">  
-<?php echo form_label(lang('common_address_1').':', 'address_1',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
+<?php echo form_label('Dirección particular:', 'address_1',array('class'=>$required.' col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
   <div class="col-sm-9 col-md-9 col-lg-10">
   <?php echo form_input(array(
     'class'=>'form-control form-inps',
@@ -121,7 +121,7 @@
 </div>
 
       <div class="form-group">  
-<?php echo form_label(lang('common_address_2').':', 'address_2',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
+<?php echo form_label('Dirección de trabajo:', 'address_2',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
   <div class="col-sm-9 col-md-9 col-lg-10">
   <?php echo form_input(array(
     'class'=>'form-control form-inps',
@@ -132,46 +132,13 @@
 </div>
 
       <div class="form-group">  
-<?php echo form_label(lang('common_city').':', 'city',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
+<?php echo form_label(lang('common_city').':', 'city',array('class'=>$required.' col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
   <div class="col-sm-9 col-md-9 col-lg-10">
   <?php echo form_input(array(
     'class'=>'form-control form-inps',
     'name'=>'city',
     'id'=>'city',
     'value'=>$person_info->city));?>
-  </div>
-</div>
-
-      <div class="form-group">  
-<?php echo form_label(lang('common_state').':', 'state',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
-  <div class="col-sm-9 col-md-9 col-lg-10">
-  <?php echo form_input(array(
-    'class'=>'form-control form-inps',
-    'name'=>'state',
-    'id'=>'state',
-    'value'=>$person_info->state));?>
-  </div>
-</div>
-
-      <div class="form-group">  
-<?php echo form_label(lang('common_zip').':', 'zip',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
-  <div class="col-sm-9 col-md-9 col-lg-10">
-  <?php echo form_input(array(
-    'class'=>'form-control form-inps',
-    'name'=>'zip',
-    'id'=>'zip',
-    'value'=>$person_info->zip));?>
-  </div>
-</div>
-
-      <div class="form-group">  
-<?php echo form_label(lang('common_country').':', 'country',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
-  <div class="col-sm-9 col-md-9 col-lg-10">
-  <?php echo form_input(array(
-    'class'=>'form-control form-inps',
-    'name'=>'country',
-    'id'=>'country',
-    'value'=>$person_info->country));?>
   </div>
 </div>
 

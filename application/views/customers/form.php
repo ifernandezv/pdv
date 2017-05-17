@@ -403,7 +403,7 @@ $(document).ready(function() {
           </div>
 
           <div class="form-group">  
-            <?php echo form_label(lang('customers_account_number').':', 'account_number',array('class'=>'required col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
+            <?php echo form_label('Cédula de Identidad:', 'account_number',array('class'=>'required col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
             <div class="col-sm-9 col-md-9 col-lg-10">
               <?php echo form_input(array(
                 'name'=>'account_number',
