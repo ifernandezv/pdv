@@ -185,10 +185,10 @@ body[data-color="grey"].flat #sidebar > ul > li.active
 	z-index: 10001;
 	
 }
+
 #header h1 {
   position: relative;
   top: -12px;
-  width: 78px;
 }
 #header h1 a{
 	height:100%;
@@ -197,7 +197,7 @@ body[data-color="grey"].flat #sidebar > ul > li.active
 #header h1 a img {
 	position:absolute;
 	height:100%;
-    padding-left: 0;
+  padding-left: 0;
 }
 #footer{
 	
@@ -257,6 +257,7 @@ display:inline-block !important;
 	/*background-color:#434343 !important;*/
 	background-color:#225E98 !important;
 }
+
 #user-nav > ul > li > a > i,
 #sidebar li a i {
   vertical-align: top;
@@ -1422,6 +1423,7 @@ textarea#comments {
   background: none;
   border: none;
 }
+.referencia,
 .company_names,
 .form-inps,
 .form-textarea {
@@ -2076,3 +2078,17 @@ a.clear-state
   color: #888888;
   font-style: italic;
 }
+
+#header.praderas, #sidebar li.praderas{
+	background: #22bb44 !important;
+}
+
+#header.pueblito, #sidebar li.pueblito{
+	background: #4422bb !important;
+}
+
+#header.kaluyo, #sidebar li.kaluyo{
+	background: #aa6611 !important;
+}
+
+
