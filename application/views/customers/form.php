@@ -414,6 +414,42 @@ $(document).ready(function() {
               </div>
             </div>
 
+          <div class="form-group">
+            <?php echo form_label('Referencia 1:', 'referencia1',array('class'=>'required col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
+            <div class="col-sm-9 col-md-9 col-lg-10">
+              <?php echo form_input(array(
+                'name'=>'referencia1',
+                'id'=>'referencia1',
+                'class'=>'referencia',
+                'value'=>$person_info->referencia1)
+                );?>
+              </div>
+            </div>
+
+          <div class="form-group">
+            <?php echo form_label('Referencia 2:', 'referencia2',array('class'=>'required col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
+            <div class="col-sm-9 col-md-9 col-lg-10">
+              <?php echo form_input(array(
+                'name'=>'referencia2',
+                'id'=>'referencia2',
+                'class'=>'referencia',
+                'value'=>$person_info->referencia2)
+                );?>
+              </div>
+            </div>
+
+          <div class="form-group">
+            <?php echo form_label('Referencia 3:', 'referencia3',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
+            <div class="col-sm-9 col-md-9 col-lg-10">
+              <?php echo form_input(array(
+                'name'=>'referencia3',
+                'id'=>'referencia3',
+                'class'=>'referencia',
+                'value'=>$person_info->referencia3)
+                );?>
+              </div>
+            </div>
+
             <div class="form-group">  
               <?php echo form_label(lang('customers_taxable').':', 'taxable',array('class'=>'col-sm-3 col-md-3 col-lg-2 control-label ')); ?>
               <div class="col-sm-9 col-md-9 col-lg-10">
@@ -444,7 +480,7 @@ $(document).ready(function() {
                   'employee_id',
                   $employees,
                   empty($person_info->employee_id)
-                    ?$this->session->employee_current_register_id
+                    ?$employee->id
                     :$person_info->employee_id
                   );
                 ?>
@@ -463,7 +499,7 @@ $(document).ready(function() {
             else {
               echo form_hidden('employee_id',
                 empty($person_info->employee_id)
-                  ?$this->session->employee_current_register_id
+                  ?$employee->id
                   :$person_info->employee_id
                 );
             }

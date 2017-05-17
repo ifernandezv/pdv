@@ -202,6 +202,9 @@ class Customers extends Person_controller
       'lat' => $this->input->post('lat') ? $this->input->post('lat') : NULL,
       'long' => $this->input->post('long') ? $this->input->post('long') : NULL,
       'account_number'=>$this->input->post('account_number')=='' ? null:$this->input->post('account_number'),
+      'referencia1'=>$this->input->post('referencia1') ? $this->input->post('referencia1'):'',
+      'referencia2'=>$this->input->post('referencia2') ? $this->input->post('referencia2'):'',
+      'referencia3'=>$this->input->post('referencia3') ? $this->input->post('referencia3'):'',
       'taxable'=>$this->input->post('taxable')=='' ? 0:1,
       'type'=>$this->input->post('type') ? $this->input->post('type'):0,
     );
