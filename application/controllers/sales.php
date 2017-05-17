@@ -151,7 +151,12 @@ class Sales extends Secure_area
     //allow parallel searchs to improve performance.
     session_write_close();
     $employee = $this->Employee->get_logged_in_employee_info();
-    $suggestions = $this->Customer->get_customer_search_suggestions($this->input->get('term'),100,$employee->id);
+    if($employee->id == $this->config->item('employee_id')) {
+      $suggestions = $this->Customer->get_customer_search_suggestions($this->input->get('term'),100);
+    }
+    else {
+      $suggestions = $this->Customer->get_customer_search_suggestions($this->input->get('term'),100,$employee->id);
+    }
     echo json_encode($suggestions);
   }
 
