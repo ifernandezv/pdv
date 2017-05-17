@@ -32,9 +32,8 @@ if (isset($error_message))
     <input type="hidden" id="customer_name" name="customer_name" value="<?= $customer_name; ?>" />
 
       <div id="customer"><?php echo lang('customers_customer').": ".$customer; ?></div>
-      <?php if(!empty($customer_address_1)){ ?><div><?php echo lang('common_address'); ?> : <?php echo $customer_address_1. ' '.$customer_address_2; ?></div><?php } ?>
-      <?php if (!empty($customer_city)) { echo $customer_city.' '.$customer_state.', '.$customer_zip;} ?>
-      <?php if (!empty($customer_country)) { echo '<div>'.$customer_country.'</div>';} ?>      
+      <?php if(!empty($customer_address_1)){ ?><div><?php echo lang('common_address'); ?> : <?php echo $customer_address_1; ?></div><?php } ?>
+      <?php if (!empty($customer_city)) { echo $customer_city;} ?>
       <?php if(!empty($customer_phone)){ ?><div><?php echo lang('common_phone_number'); ?> : <?php echo $customer_phone; ?></div><?php } ?>
       <?php if(!empty($customer_email)){ ?><div><?php echo lang('common_email'); ?> : <?php echo $customer_email; ?></div><?php } ?>
     <?php
